@@ -1,8 +1,6 @@
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 
 public class PhishGuard {
 
@@ -36,73 +34,25 @@ public class PhishGuard {
                 .replace("4", "a").replace("5", "s");
     }
 
-    static String[] OFFICIAL = {
-            "google.com", "google-analytics.com", "youtube.com",
-            "amazon.com", "amazon.in", "microsoft.com", "apple.com",
-            "facebook.com", "instagram.com", "whatsapp.com", "netflix.com",
-            "paytm.com", "flipkart.com", "sbi.co.in", "hdfcbank.com",
-            "icicibank.com", "irctc.co.in", "phonepe.com", "uidai.gov.in",
-            "epfindia.gov.in", "onlinesbi.sbi", "linkedin.com", "github.com",
-            "wikipedia.org"
-    };
-
-    static boolean isOfficialHost(String host) {
-        for (String ok : OFFICIAL) {
-            if (host.equals(ok) || host.endsWith("." + ok)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    static int editDistance(String a, String b) {
-        int[] previous = new int[b.length() + 1];
-        int[] current = new int[b.length() + 1];
-        for (int j = 0; j <= b.length(); j++) {
-            previous[j] = j;
-        }
-        for (int i = 1; i <= a.length(); i++) {
-            current[0] = i;
-            for (int j = 1; j <= b.length(); j++) {
-                int change = a.charAt(i - 1) == b.charAt(j - 1) ? 0 : 1;
-                current[j] = Math.min(Math.min(current[j - 1] + 1, previous[j] + 1),
-                        previous[j - 1] + change);
-            }
-            int[] swap = previous;
-            previous = current;
-            current = swap;
-        }
-        return previous[b.length()];
-    }
-
-    // Does this website name imitate a famous brand? Returns points to add.
+        static String[] OFFICIAL = {"google-analytics.com"};
+        // Does this website name imitate a famous brand? Returns points to add.
     static int brandCheck(String host, List<String> reasons) {
         int points = 0;
-        if (isOfficialHost(host)) {
-            return 0;
+                for (String ok : OFFICIAL) {
+            if (host.equals(ok) || host.endsWith("." + ok)) {
+                return 0;
+            }
         }
-
-        // Inspect every hostname label, not just the registered domain.
-        // This catches attacks such as paypal.com.secure-check.xyz.
-        Set<String> foundBrands = new HashSet<>();
-        for (String label : host.split("\\.")) {
-            for (String piece : label.split("-")) {
+        String[] parts = host.split("\\.");
+        if (parts.length >= 2) {
+            String name = parts[parts.length - 2];
+            for (String piece : name.split("-")) {
                 for (String brand : BRANDS) {
-                    if (foundBrands.contains(brand)) {
-                        continue;
-                    }
                     if (!piece.equals(brand) && unswap(piece).equals(brand)) {
                         points += 40;
-                        foundBrands.add(brand);
                         reasons.add("Lookalike of '" + brand + "': '" + piece + "'");
-                    } else if (!piece.equals(brand) && piece.length() >= 5
-                            && editDistance(piece, brand) == 1) {
-                        points += 35;
-                        foundBrands.add(brand);
-                        reasons.add("Possible typo of '" + brand + "': '" + piece + "'");
-                    } else if (piece.equals(brand)) {
+                    } else if (piece.equals(brand) && !name.equals(brand)) {
                         points += 30;
-                        foundBrands.add(brand);
                         reasons.add("Uses the brand name '" + brand + "' in an unofficial domain");
                     }
                 }

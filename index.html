@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PhishGuard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 720px;
+      margin: 30px auto;
+      padding: 0 15px;
+      background: #f4f6f8;
+      color: #222;
+    }
+    h1 { margin-bottom: 4px; }
+    .tagline { color: #666; margin-top: 0; }
+    .box {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 18px 0;
+    }
+    input, textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px;
+      margin: 6px 0;
+      font-size: 15px;
+    }
+    button {
+      padding: 8px 16px;
+      font-size: 15px;
+      background: #1f5fbf;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button.small { background: #777; padding: 5px 10px; font-size: 13px; }
+    #result { border-left: 8px solid #999; }
+    .bar { background: #ddd; height: 12px; border-radius: 6px; overflow: hidden; margin: 10px 0; }
+    .fill { height: 100%; width: 0; }
+    footer { color: #888; font-size: 13px; text-align: center; margin-top: 30px; }
+  </style>
+</head>
+<body>
+
+  <h1>PhishGuard</h1>
+  <p class="tagline">Check if a link or email looks like phishing, and see why.</p>
+
+  <div class="box">
+    <h3>Check a link</h3>
+    <input id="url" placeholder="Paste a link, e.g. http://paypa1-login.xyz">
+    <button onclick="checkUrl()">Check link</button>
+    <button class="small" onclick="fillUrl('https://www.google.com')">try: safe</button>
+    <button class="small" onclick="fillUrl('https://paypa1-secure-login.xyz/update')">try: fake</button>
+  </div>
+
+  <div class="box">
+    <h3>Check an email</h3>
+    <input id="sender" placeholder="Sender (optional), e.g. PayPal <help@paypa1-alerts.top>">
+    <textarea id="body" rows="7" placeholder="Paste the email text here"></textarea>
+    <button onclick="checkEmail()">Check email</button>
+  </div>
+
+  <div id="result" class="box" style="display:none">
+    <h2 id="verdict"></h2>
+    <div class="bar"><div id="fill" class="fill"></div></div>
+    <b>Why?</b>
+    <ul id="reasons"></ul>
+  </div>
+
+  <footer>Built for ACM SYNAPSE - put your name and college here</footer>
+
+<script>
+  function fillUrl(value) {
+    document.getElementById("url").value = value;
+  }
+
+  async function checkUrl() {
+    var data = new URLSearchParams();
+    data.append("url", document.getElementById("url").value);
+    var response = await fetch("/api/url", { method: "POST", body: data });
+    showResult(await response.json());
+  }
+
+  async function checkEmail() {
+    var data = new URLSearchParams();
+    data.append("sender", document.getElementById("sender").value);
+    data.append("body", document.getElementById("body").value);
+    var response = await fetch("/api/email", { method: "POST", body: data });
+    showResult(await response.json());
+  }
+
+  function showResult(r) {
+    var color = "#2e9e4f";
+    if (r.verdict == "HIGH RISK") { color = "#d32f2f"; }
+    else if (r.verdict == "SUSPICIOUS") { color = "#e69500"; }
+
+    document.getElementById("result").style.display = "block";
+    document.getElementById("result").style.borderLeftColor = color;
+
+    var title = document.getElementById("verdict");
+    title.textContent = r.verdict + " (" + r.score + "/100)";
+    title.style.color = color;
+
+    var fill = document.getElementById("fill");
+    fill.style.width = r.score + "%";
+    fill.style.background = color;
+
+    var list = document.getElementById("reasons");
+    list.innerHTML = "";
+    for (var i = 0; i < r.reasons.length; i++) {
+      var item = document.createElement("li");
+      item.textContent = r.reasons[i];
+      list.appendChild(item);
+    }
+  }
+</script>
+
+</body>
+</html>
