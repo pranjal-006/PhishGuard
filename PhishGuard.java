@@ -4,13 +4,13 @@ import java.util.Scanner;
 
 public class PhishGuard {
 
-        static String[] BRANDS = {"paypal", "google", "amazon", "microsoft", "apple",
+    static final String[] BRANDS = {"paypal", "google", "amazon", "microsoft", "apple",
             "facebook", "netflix", "instagram", "whatsapp", "paytm", "flipkart",
             "sbi", "hdfcbank", "icicibank", "irctc", "phonepe", "uidai", "epfo"};
 
     // Gets just the website part, e.g. "paypa1-secure-login.xyz"
     static String getHost(String url) {
-        String s = url.toLowerCase();
+        String s = url.trim().toLowerCase();
         if (s.contains("://")) {
             s = s.substring(s.indexOf("://") + 3);
         }
@@ -25,6 +25,9 @@ public class PhishGuard {
         if (colon != -1) {
             s = s.substring(0, colon);
         }
+        if (s.endsWith(".")) {
+            s = s.substring(0, s.length() - 1);
+        }
         return s;
     }
 
@@ -34,8 +37,9 @@ public class PhishGuard {
                 .replace("4", "a").replace("5", "s");
     }
 
-        static String[] OFFICIAL = {"google-analytics.com"};
-        // Does this website name imitate a famous brand? Returns points to add.
+    static final String[] OFFICIAL = {"google-analytics.com"};
+
+    // Does this website name imitate a famous brand? Returns points to add.
     static int brandCheck(String host, List<String> reasons) {
         int points = 0;
                 for (String ok : OFFICIAL) {
@@ -152,7 +156,7 @@ public class PhishGuard {
             }
         }
 
-        String[] sensitive = {"password", " otp", "cvv", "card number", "your pin",
+        String[] sensitive = {"password", "otp", "cvv", "card number", "your pin",
                 "aadhaar", "bank details", "upi pin", "pan card"};
         for (String w : sensitive) {
             if (lower.contains(w)) {
