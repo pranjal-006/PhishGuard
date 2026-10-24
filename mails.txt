@@ -1,0 +1,63 @@
+sender:
+Rahul <rahul@gmail.com>
+Text:
+Hi Pranjal, are we meeting for the ACM practice session tomorrow at 4 pm? Notes are here: https://github.com/acm/notes. Thanks, Rahul
+ 
+ 
+=== EMAIL 2: Real urgent mail from a professor  -> LIKELY SAFE (16) ===
+Sender:
+Professor <prof@college.edu>
+Text:
+Urgent: please submit your assignment immediately. The portal closes tonight. Login at https://portal.college.edu/login
+ 
+ 
+=== EMAIL 3: Real bank OTP message  -> LIKELY SAFE (12) ===
+Sender:
+HDFC Bank <alerts@hdfcbank.com>
+Text:
+Your OTP for the transaction of Rs 1,200 at Amazon is 482913. Do not share it with anyone. This OTP is valid for 10 minutes.
+ 
+ 
+=== EMAIL 4: SBI KYC SMS, no link  -> SUSPICIOUS (32) ===
+Sender:
+(leave empty)
+Text:
+Dear customer your SBI KYC is expired, update now
+ 
+ 
+=== EMAIL 5: SBI KYC with a fake link  -> HIGH RISK (79) ===
+Sender:
+SBI Alerts <alert@sbi-kyc-update.xyz>
+Text:
+Dear Customer, your SBI account will be blocked today. Complete your KYC now: http://sbi-kyc-update.xyz/login
+ 
+ 
+=== EMAIL 6: Lottery scam  -> HIGH RISK (70) ===
+Sender:
+Lucky Draw <winner@mega-lottery.top>
+Text:
+Congratulations! You have won a lottery of Rs 25,00,000. Claim your prize now by sending your bank details and card number to: https://bit.ly/claim-prize-now
+ 
+ 
+=== EMAIL 7: Amazon refund scam  -> HIGH RISK (100) ===
+Sender:
+Amazon <refund@amaz0n-support.xyz>
+Text:
+Dear customer, your order could not be delivered. A refund of Rs 4,999 is pending. Verify your account and enter your card number immediately: http://amaz0n-refund.top/verify
+ 
+ 
+=== EMAIL 8: PayPal phishing  -> HIGH RISK (100) ===
+Sender:
+PayPal Support <help@paypa1-alerts.top>
+Text:
+Dear Customer, We detected unauthorized activity. Your account will be suspended within 24 hours. Act now, verify your account and enter your password: http://paypa1-alerts.top/verify
+ 
+ 
+=== EMAIL 9: Money-request scam (KNOWN MISS)  -> LIKELY SAFE (0) ===
+Sender:
+(leave empty)
+Text:
+Hello, I am your senior from college. I lost my wallet, can you send Rs 5000 to this number 98xxxxxx21, I will return tomorrow.
+ 
+Say this on the slide: "PhishGuard catches technical signs of phishing. Pure social-engineering
+scams with no links or keywords need extra detection - that is our future work."
